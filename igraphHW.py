@@ -1,9 +1,22 @@
 import igraph as ig
 import matplotlib.pyplot as plt
 
+def readGraph():
+    f = open("network_db/download.tsv.chess/chess/out.chess", "r")
+    print(f.readline()) # cabeçalho
+    edges = []
+    weights = []
+    aux = 1
+    for line in f:
+        line = line.split('\t')[0].split(" ")
+        edges.append((int(line[0]), int(line[1])))
+        weights.append(int(line[2]))
+    num_vertices = findMax(edges)
+    print("finished")
+    return num_vertices, edges, weights
+
 def createGraph(n_vertices, edges, weights):
     g = ig.Graph(n_vertices, edges)
-    # Set attributes for the graph, nodes, and edges
     g["title"] = "Chess Games"
     g.es["weights"] = weights
     return g
@@ -36,22 +49,6 @@ def plotGraph(g):
     g.save("chess_network.gml")
     g = ig.load("chess_network.gml")
 
-
-def readGraph():
-    f = open("network_db/download.tsv.chess/chess/out.chess", "r")
-    print(f.readline()) # cabeçalho
-    edges = []
-    weights = []
-    aux = 1
-    for line in f:
-        aux += 1
-        if(aux < 20):
-            line = line.split('\t')[0].split(" ")
-            edges.append((int(line[0]), int(line[1])))
-            weights.append(int(line[2]))
-    num_vertices = findMax(edges)
-    return num_vertices, edges, weights
-
 def findMax(arr):
     max_value = 0
     for tuple in arr:
@@ -64,4 +61,10 @@ def findMax(arr):
 
 num_vertices, edges, weights = readGraph()
 g = createGraph(num_vertices, edges, weights)
-plotGraph(g)
+
+# Get (Grau/Degree) statistics
+degrees = g.degree()
+min_degree, max_degree = min(degrees), max(degrees)
+mean_degree, median_degree = (sum(degrees) / len(degrees)), sorted(degrees)[len(degrees) // 2]
+print(f"Graus (min/max/média/mediana): {min_degree, max_degree, mean_degree, median_degree}")
+# plotGraph(g)
