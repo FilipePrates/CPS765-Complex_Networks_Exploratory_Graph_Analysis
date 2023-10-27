@@ -1,13 +1,14 @@
 import igraph as ig
 import matplotlib.pyplot as plt
 
-edges = []
-
-def main(n_vertices, edges, weights):
+def createGraph(n_vertices, edges, weights):
     g = ig.Graph(n_vertices, edges)
     # Set attributes for the graph, nodes, and edges
     g["title"] = "Chess Games"
     g.es["weights"] = weights
+    return g
+
+def plotGraph(g):
     # Plot in matplotlib
     # Note that attributes can be set globally (e.g. vertex_size), or set individually using arrays (e.g. vertex_color)
     fig, ax = plt.subplots(figsize=(5,5))
@@ -35,6 +36,7 @@ def main(n_vertices, edges, weights):
     g.save("chess_network.gml")
     g = ig.load("chess_network.gml")
 
+
 def readGraph():
     f = open("network_db/download.tsv.chess/chess/out.chess", "r")
     print(f.readline()) # cabeçalho
@@ -43,7 +45,7 @@ def readGraph():
     aux = 1
     for line in f:
         aux += 1
-        if(aux < 40):
+        if(aux < 20):
             line = line.split('\t')[0].split(" ")
             edges.append((int(line[0]), int(line[1])))
             weights.append(int(line[2]))
@@ -61,4 +63,5 @@ def findMax(arr):
     return max_value
 
 num_vertices, edges, weights = readGraph()
-main(num_vertices, edges, weights)
+g = createGraph(num_vertices, edges, weights)
+plotGraph(g)
