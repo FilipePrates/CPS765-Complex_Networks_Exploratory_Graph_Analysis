@@ -67,7 +67,6 @@ def plotCCDF(array, name):
     plt.show()
     fig.savefig(name + '_ccdf.png')
 
-# Get (Grau/Degree) statistics
 def getDegreeStatistics(g):
     degrees = g.degree()
     min_degree, max_degree = min(degrees), max(degrees)
@@ -75,6 +74,18 @@ def getDegreeStatistics(g):
     std_dev_degree = statistics.stdev(degrees)
     print(f"Graus (min/max/média/mediana/desvio_padrão): {min_degree, max_degree, mean_distance, median_degree, std_dev_degree}")
     plotCCDF(degrees, "Graus_Xadrez")
+
+def getDistancesStatistics(g):
+    distances = np.array(g.vs().distances())
+    distances = distances.flatten()
+    # Removemos distâncias infinitas
+    distances = np.delete(distances, np.where(distances == float('inf')))
+    min_distance, max_distance = min(distances), max(distances)
+    mean_distance, median_distance = (sum(distances) / len(distances)), sorted(distances)[len(distances) // 2]
+    std_dev_distance = statistics.stdev(distances) # Bug
+    print(f"Distâncias (min/max/média/mediana/desvio_padrão): {min_distance, max_distance, mean_distance, median_distance, std_dev_distance}")
+    plotCCDF(distances, "Distâncias_Xadrez")
+    plotGraph(g)
 
 def getCCs(g):
     print('had')
