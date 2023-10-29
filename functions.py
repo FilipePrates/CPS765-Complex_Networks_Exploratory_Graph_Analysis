@@ -81,11 +81,22 @@ def getDistancesStatistics(g):
     # Removemos distâncias infinitas
     distances = np.delete(distances, np.where(distances == float('inf')))
     min_distance, max_distance = min(distances), max(distances)
-    mean_distance, median_distance = (sum(distances) / len(distances)), sorted(distances)[len(distances) // 2]
+    mean_ccsize, median_distance = (sum(distances) / len(distances)), sorted(distances)[len(distances) // 2]
     std_dev_distance = statistics.stdev(distances) # Bug
-    print(f"Distâncias (min/max/média/mediana/desvio_padrão): {min_distance, max_distance, mean_distance, median_distance, std_dev_distance}")
+    print(f"Distâncias (min/max/média/mediana/desvio_padrão): {min_distance, max_distance, mean_ccsize, median_distance, std_dev_distance}")
     plotCCDF(distances, "Distâncias_Xadrez")
-    plotGraph(g)
 
-def getCCs(g):
-    print('had')
+def getCCSizes(g):
+    CCsizes = []
+    for cluster in g.clusters():
+        CCsizes.append(len(cluster))
+    return CCsizes
+
+def getCCSizesStatistics(g):
+    ccsizes = getCCSizes(g)
+    min_ccsize, max_ccsize = min(ccsizes), max(ccsizes)
+    mean_ccsize, median_ccsize = (sum(ccsizes) / len(ccsizes)), sorted(ccsizes)[len(ccsizes) // 2]
+    std_dev_ccsize = statistics.stdev(ccsizes) # Bug
+    print(f"Tamanho Componentes Conexas (min/max/média/mediana/desvio_padrão): {min_ccsize, max_ccsize, mean_ccsize, median_ccsize, std_dev_ccsize}")
+    plotCCDF(ccsizes, "Tamanho_Componentes_Conexas_Xadrez")
+    
