@@ -14,11 +14,7 @@ def findMax(arr):
 
 def readGraph1():
     f = open("network_db/download.tsv.chess/chess/out.chess", "r")
-    cabeçalho = f.readline() # cabeçalho
-    print(cabeçalho.split(" "))
-    while cabeçalho.split(" ")[0] == "%" :
-        cabeçalho = f.readline() # cabeçalho
-        print(cabeçalho)
+    f.readline() # cabeçalho
     edges = []
     weights = []
     # aux = 1
@@ -45,7 +41,20 @@ def readGraph2():
         edges.append((int(line[0]), int(line[1])))
         weights.append(1)
     num_vertices = findMax(edges)
-    print(len(edges))
+    return num_vertices, edges, weights
+
+def readGraph3():
+    f = open("network_db/usairports", "r")
+    f.readline() # cabeçalho
+    f.readline() # cabeçalho
+    edges = []
+    weights = []
+    for line in f:
+        line = line.split(" ")
+        edges.append((int(line[0]), int(line[1])))
+        weights.append(int(line[2]))
+    num_vertices = findMax(edges)
+    print(num_vertices, len(edges))
     return num_vertices, edges, weights
 
 def createGraph(n_vertices, edges, weights):
@@ -119,6 +128,14 @@ def getCCSizesStatistics(g, name):
     std_dev_ccsize = statistics.stdev(ccsizes) # Bug
     print(f"Tamanho Componentes Conexas (min/max/média/mediana/desvio_padrão): {min_ccsize, max_ccsize, mean_ccsize, median_ccsize, std_dev_ccsize}")
     plotCCDF(ccsizes, "Tamanho_Componentes_Conexas_" + name)
+
+def getBetwennessStatistics(g, name):
+    betwenness = g.vs().betweenness()
+    min_betwenness, maxn_betwenness = min(betwenness), max(betwenness)
+    meann_betwenness, mediann_betwenness = (sum(betwenness) / len(betwenness)), sorted(betwenness)[len(betwenness) // 2]
+    std_devn_betwenness = statistics.stdev(betwenness) # Bug
+    print(f"Betwenness (min/max/média/mediana/desvio_padrão): {min_betwenness, maxn_betwenness, meann_betwenness, mediann_betwenness, std_devn_betwenness}")
+    plotCCDF(betwenness, "Betwenness_" + name)
 
 def getClusterizationStatistics(g):
     print(g.clusters())
